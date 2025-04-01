@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
+import mongoose, { Schema, Document } from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 // Define the interface for the user document
 interface IUser extends Document {
@@ -52,13 +52,13 @@ const userSchema: Schema<IUser> = new Schema(
         watchHistory: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'Video',
+                ref: "Video",
             },
         ],
         password: {
             type: String,
-            required: [true, 'Password is required'],
-            minlength: [8, 'Password must be at least 8 characters long'],
+            required: [true, "Password is required"],
+            minlength: [8, "Password must be at least 8 characters long"],
         },
         refreshToken: {
             type: String,
@@ -69,8 +69,8 @@ const userSchema: Schema<IUser> = new Schema(
 );
 
 // Hash password before saving if it's modified
-userSchema.pre<IUser>('save', async function (next) {
-    if (this.isModified('password')) {
+userSchema.pre<IUser>("save", async function (next) {
+    if (this.isModified("password")) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
     }
@@ -78,14 +78,16 @@ userSchema.pre<IUser>('save', async function (next) {
 });
 
 // Instance method to check if the password matches
-userSchema.methods.isPasswordMatch = async function (password: string): Promise<boolean> {
+userSchema.methods.isPasswordMatch = async function (
+    password: string
+): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
 };
 
 // Instance method to generate access token
 userSchema.methods.generateAccessToken = function (): string {
     if (!process.env.ACCESS_TOKEN_SECRET) {
-        throw new Error('ACCESS_TOKEN_SECRET is not defined');
+        throw new Error("ACCESS_TOKEN_SECRET is not defined");
     }
 
     const accessToken = jwt.sign(
@@ -106,12 +108,12 @@ userSchema.methods.generateAccessToken = function (): string {
 // Instance method to generate refresh token
 userSchema.methods.generateRefreshToken = function (): string {
     if (!process.env.JWT_REFRESH_SECRET) {
-        throw new Error('JWT_REFRESH_SECRET is not defined');
+        throw new Error("JWT_REFRESH_SECRET is not defined");
     }
 
     const refreshToken = jwt.sign(
         {
-            id: this._id
+            id: this._id,
         },
         process.env.JWT_REFRESH_SECRET,
         {
@@ -122,6 +124,6 @@ userSchema.methods.generateRefreshToken = function (): string {
 };
 
 // Create the model using the interface
-const User = mongoose.model<IUser>('User', userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;

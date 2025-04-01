@@ -3,19 +3,24 @@ class ApiErrorHandler extends Error {
     data: any | null;
     success: boolean;
     error: any[];
-    
-    constructor(statusCode: number, message: string, error: any[], stack?: string) {
+
+    constructor(
+        statusCode: number,
+        message: string,
+        error: any[],
+        stack?: string
+    ) {
         super(message);
-        
+
         // Set the name of the error instance
         this.name = this.constructor.name;
-        
+
         // Set the statusCode and other properties
         this.statusCode = statusCode;
         this.data = null;
         this.success = false;
         this.error = error;
-        
+
         // Set the stack trace (if provided, otherwise capture it)
         if (stack) {
             this.stack = stack;

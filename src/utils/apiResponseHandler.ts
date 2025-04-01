@@ -8,7 +8,7 @@ class ApiResponseHandler {
         statusCode: number,
         data: any,
         message: string,
-        success: boolean,
+        success: boolean
     ) {
         this.statusCode = statusCode < 400;
         this.data = data;

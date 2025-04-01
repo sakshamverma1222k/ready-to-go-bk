@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2';
+import mongoose, { Schema, Document } from "mongoose";
+import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 // Define the interface for the video document
 interface IVideo extends Document {
@@ -52,7 +52,7 @@ const videoSchema: Schema<IVideo> = new Schema(
         },
         owner: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: "User",
             required: true,
         },
         // Uncomment and modify the following fields if necessary
@@ -75,6 +75,6 @@ const videoSchema: Schema<IVideo> = new Schema(
 videoSchema.plugin(mongooseAggregatePaginate);
 
 // Create the model using the interface
-const Video = mongoose.model<IVideo>('Video', videoSchema);
+const Video = mongoose.model<IVideo>("Video", videoSchema);
 
 export default Video;

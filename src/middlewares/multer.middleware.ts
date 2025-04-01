@@ -1,19 +1,22 @@
-import multer from 'multer';
-import type { Request } from 'express'; // Use type-only import for Request
-import type { StorageEngine } from 'multer'; // Use type-only import for StorageEngine
-
+import multer from "multer";
+import type { Request } from "express"; // Use type-only import for Request
+import type { StorageEngine } from "multer"; // Use type-only import for StorageEngine
 
 // Configure the storage engine for multer
 const storage: StorageEngine = multer.diskStorage({
-    destination: function (req: Request, file: Express.Multer.File, cb: Function) {
+    destination: function (
+        req: Request,
+        file: Express.Multer.File,
+        cb: Function
+    ) {
         // Save files to the './public/temp' directory
-        cb(null, './public/temp');
+        cb(null, "./public/temp");
     },
     filename: function (req: Request, file: Express.Multer.File, cb: Function) {
         // Generate a unique file name using the current timestamp and a random number
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname);
-    }
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + "-" + uniqueSuffix + "-" + file.originalname);
+    },
 });
 
 // File size and type limits configuration for multer
