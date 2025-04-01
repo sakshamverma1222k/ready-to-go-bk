@@ -1,4 +1,9 @@
 class ApiResponseHandler {
+    statusCode: number | boolean;
+    data: any;
+    message: string;
+    success: boolean;
+
     constructor(
         statusCode: number,
         data: any,
