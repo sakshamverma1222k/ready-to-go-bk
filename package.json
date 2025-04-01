@@ -2,10 +2,20 @@
   "name": "ready-to-go-bk",
   "module": "src/index.ts",
   "type": "module",
+  "version": "0.0.1",
+  "description": "A ready-to-go Bun project with TypeScript & MongoDB.",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec bun src/index.ts",
+    "build": "bun build src/index.ts --outdir=dist",
+    "format": "prettier --write ."
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "author": "Saksham Verma"
 }
