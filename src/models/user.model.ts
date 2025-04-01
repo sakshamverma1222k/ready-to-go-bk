@@ -97,7 +97,7 @@ userSchema.methods.generateAccessToken = function (): string {
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '1h',
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
         }
     );
     return accessToken;
@@ -115,7 +115,7 @@ userSchema.methods.generateRefreshToken = function (): string {
         },
         process.env.JWT_REFRESH_SECRET,
         {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN || '7d',
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
         }
     );
     return refreshToken;
