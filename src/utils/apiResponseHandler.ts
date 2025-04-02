@@ -16,4 +16,4 @@ class ApiResponseHandler {
         this.success = success;
     }
 }
-export default ApiResponseHandler;
+export { ApiResponseHandler };

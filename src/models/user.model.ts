@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 // Define the interface for the user document
-interface IUser extends Document {
+export interface IUser extends Document {
     userName: string;
     fullName: string;
     email: string;
@@ -70,6 +70,10 @@ const userSchema: Schema<IUser> = new Schema(
 
 // Hash password before saving if it's modified
 userSchema.pre<IUser>("save", async function (next) {
+    this.userName = this.userName.toLowerCase();
+    this.email = this.email.toLowerCase();
+
+    // Check if the password is modified or new
     if (this.isModified("password")) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);

@@ -10,7 +10,7 @@ class ApiErrorHandler extends Error {
         error: any[],
         stack?: string
     ) {
-        super(message);
+        super(message); // Call the parent constructor with the message
 
         // Set the name of the error instance
         this.name = this.constructor.name;
