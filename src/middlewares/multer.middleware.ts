@@ -1,6 +1,14 @@
 import multer from "multer";
 import type { Request } from "express"; // Use type-only import for Request
 import type { StorageEngine } from "multer"; // Use type-only import for StorageEngine
+import fs from 'fs';
+import path from 'path';
+
+const tempDir = path.join(__dirname, '../../public/temp');
+
+if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true }); // Creates the directory and any necessary parent directories
+}
 
 // Configure the storage engine for multer
 const storage: StorageEngine = multer.diskStorage({
@@ -10,7 +18,7 @@ const storage: StorageEngine = multer.diskStorage({
         cb: Function
     ) {
         // Save files to the './public/temp' directory
-        cb(null, "./public/temp");
+        cb(null, tempDir);
     },
     filename: function (req: Request, file: Express.Multer.File, cb: Function) {
         // Generate a unique file name using the current timestamp and a random number

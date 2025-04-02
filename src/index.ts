@@ -3,7 +3,7 @@ import connectDB from "./db";
 import app from "./app.ts";
 
 dotenv.config({
-    path: `.env${process.env.NODE_ENV ? "." + process.env.NODE_ENV : ""}`,
+    path: `./.env${process.env.NODE_ENV ? "." + process.env.NODE_ENV : ""}`,
 });
 
 connectDB()

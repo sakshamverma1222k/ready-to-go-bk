@@ -5,6 +5,12 @@ const asyncHandler = (requestHandlerFunc: Function) => {
         Promise.resolve(requestHandlerFunc(req, res, next)).catch(
             (err: any) => {
                 console.error("Error in asyncHandler:", err);
+                res.status(err.statusCode || 500).json({
+                    success: false,
+                    statusCode: err.statusCode || 500,
+                    message: err.message || "Internal Server Error",
+                    error: err.error || ["An error occurred"],
+                });
                 next(err);
             }
         );
