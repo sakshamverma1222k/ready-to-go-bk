@@ -9,7 +9,7 @@ cloudinary.config({
 
 const uploadOnCloudinary = async (filePath: string) => {
     console.log("Uploading file to Cloudinary:", filePath);
-    
+
     try {
         if (!filePath) {
             throw new Error("File path is required");
