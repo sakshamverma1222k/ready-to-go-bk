@@ -107,9 +107,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 const getUserDetails = asyncHandler((req: Request, res: Response) => {
     const user = req.user;
     if (!user) {
-        throw new ApiErrorHandler(404, "User not found", [
-            "User not found",
-        ]);
+        throw new ApiErrorHandler(404, "User not found", ["User not found"]);
     }
     res.status(200).json(
         new ApiResponseHandler(
@@ -119,7 +117,7 @@ const getUserDetails = asyncHandler((req: Request, res: Response) => {
             true
         )
     );
-})
+});
 
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, userName, password }: IUser = req.body;
