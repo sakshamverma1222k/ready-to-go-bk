@@ -3,6 +3,7 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 
 // Define the interface for the video document
 export interface IVideo extends Document {
+    _id: string
     title: string;
     description: string;
     thumbnail: string;

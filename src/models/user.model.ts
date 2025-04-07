@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 
 // Define the interface for the user document
 export interface IUser extends Document {
+    _id: string;
     userName: string;
     fullName: string;
     email: string;
@@ -111,15 +112,15 @@ userSchema.methods.generateAccessToken = function (): string {
 
 // Instance method to generate refresh token
 userSchema.methods.generateRefreshToken = function (): string {
-    if (!process.env.JWT_REFRESH_SECRET) {
-        throw new Error("JWT_REFRESH_SECRET is not defined");
+    if (!process.env.REFRESH_TOKEN_SECRET) {
+        throw new Error("REFRESH_TOKEN_SECRET is not defined");
     }
 
     const refreshToken = jwt.sign(
         {
             id: this._id,
         },
-        process.env.JWT_REFRESH_SECRET,
+        process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
         }
