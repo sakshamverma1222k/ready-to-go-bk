@@ -5,29 +5,49 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model";
 
 // JWT Verification Middleware
-export const verifyJWT = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        // Get the token from cookies or Authorization header
-        const token = req.cookies.accessToken || req.headers["authorization"]?.replace("Bearer ", "");
+export const verifyJWT = asyncHandler(
+    async (req: Request, _: Response, next: NextFunction) => {
+        try {
+            const token =
+                req.cookies?.accessToken ||
+                req.header("Authorization")?.replace("Bearer ", "");
 
-        if (!token) {
-            throw new ApiErrorHandler(401, "Unauthorized request", ["User Unauthorized"]);
+            // console.log(token);
+            if (!token) {
+                throw new ApiErrorHandler(401, "Unauthorized request", [
+                    "Token wasn't provided",
+                ]);
+            }
+
+            console.log(
+                "process.env.ACCESS_TOKEN_SECRET",
+                process.env.ACCESS_TOKEN_SECRET,
+                "token",
+                token
+            );
+
+            const decodedToken: any = jwt.verify(
+                token,
+                process.env.ACCESS_TOKEN_SECRET || ""
+            );
+
+            const user = await User.findById(decodedToken?._id).select(
+                "-password -refreshToken"
+            );
+
+            if (!user) {
+                throw new ApiErrorHandler(401, "Invalid Access Token", []);
+            }
+
+            req.user = user;
+            next();
+        } catch (error: any) {
+            throw new ApiErrorHandler(
+                error?.statusCode || 401,
+                error?.message || "Invalid access token",
+                error?.error || [],
+                error?.stack
+            );
         }
-
-        // Verify the token
-        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "");
-
-        // Fetch the user from the database using the decoded token's ID
-        const user = await User.findById((decodedToken as any)?._id).select("-password -refreshToken");
-
-        if (!user) {
-            throw new ApiErrorHandler(402, "Invalid Access Token", ["User Unauthorized"]);
-        }
-
-        // Attach the user to the request object
-        req.user = user;
-        next();
-    } catch (error:any) {
-        throw new ApiErrorHandler(401, error?.message || "Invalid Access Token", ["User Unauthorized"]);
     }
-});
+);

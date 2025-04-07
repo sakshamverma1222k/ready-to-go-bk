@@ -6,7 +6,6 @@ import { ApiResponseHandler } from "../utils/apiResponseHandler";
 import User from "../models/user.model";
 import { uploadOnCloudinary } from "../utils/cloudinary";
 
-
 const generateAccessAndRefreshToken = async (userId: string) => {
     try {
         const user: IUser | null = await User.findById(userId);
@@ -25,11 +24,9 @@ const generateAccessAndRefreshToken = async (userId: string) => {
         return { accessToken, refreshToken };
     } catch (error) {
         console.error("Error generating tokens:", error);
-        throw new ApiErrorHandler(500, "Token generation failed", [
-            error
-        ]);
+        throw new ApiErrorHandler(500, "Token generation failed", [error]);
     }
-}
+};
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
     const { userName, fullName, email, password }: IUser = req.body;
@@ -47,7 +44,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
         ]);
     }
 
-    const myFiles: any = req.files
+    const myFiles: any = req.files;
 
     const avatarLocalPath = myFiles?.avatar[0]?.path;
     let coverImageLocalPath = null;
@@ -107,12 +104,31 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
     );
 });
 
+const getUserDetails = asyncHandler((req: Request, res: Response) => {
+    const user = req.user;
+    if (!user) {
+        throw new ApiErrorHandler(404, "User not found", [
+            "User not found",
+        ]);
+    }
+    res.status(200).json(
+        new ApiResponseHandler(
+            200,
+            user,
+            "User details fetched successfully",
+            true
+        )
+    );
+})
+
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, userName, password }: IUser = req.body;
     if (!email && !userName) {
-        throw new ApiErrorHandler(400, "You need to provide either email or username", [
-            "Missing fields",
-        ]);
+        throw new ApiErrorHandler(
+            400,
+            "You need to provide either email or username",
+            ["Missing fields"]
+        );
     } else if (!password) {
         throw new ApiErrorHandler(400, "Password is required", [
             "Missing password",
@@ -139,13 +155,16 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
         ]);
     }
 
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(loggedInUser._id);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+        loggedInUser._id
+    );
 
     const options = {
         httpOnly: true,
-        secure: true
-    }
-    return res.status(200)
+        secure: true,
+    };
+    return res
+        .status(200)
         .cookie("accessToken", accessToken, options)
         .cookie("refreshToken", refreshToken, options)
         .json(
@@ -155,33 +174,31 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
                 "User Logged In Successfully",
                 true
             )
-        )
-})
+        );
+});
 
 const logoutUser = asyncHandler(async (req: Request, res: Response) => {
-    const loggedInUser = req.user
-    User.findByIdAndUpdate(loggedInUser._id, {
-        $set: {
-            refreshToken: undefined
-        }
-    }, { new: true })
+    const loggedInUser = req.user;
+    User.findByIdAndUpdate(
+        loggedInUser._id,
+        {
+            $set: {
+                refreshToken: undefined,
+            },
+        },
+        { new: true }
+    );
 
     const options = {
         httpOnly: true,
-        secure: true
-    }
+        secure: true,
+    };
 
-    return res.status(200)
-        .cookie("accessToken", options)
-        .cookie("refreshToken", options)
-        .json(
-            new ApiResponseHandler(
-                200,
-                {},
-                "User Logged Out",
-                true
-            )
-        )
-})
+    return res
+        .status(200)
+        .cookie("accessToken", "", options)
+        .cookie("refreshToken", "", options)
+        .json(new ApiResponseHandler(200, {}, "User Logged Out", true));
+});
 
-export { registerUser, loginUser, logoutUser };
+export { registerUser, loginUser, logoutUser, getUserDetails };

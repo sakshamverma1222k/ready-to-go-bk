@@ -1,5 +1,5 @@
 interface ICookies {
-    accessToken: string
+    accessToken: string;
 }
 
 declare namespace Express {
